@@ -1,0 +1,28 @@
+name: KiCad CI/CD for ElectronicCats Projects
+
+on:
+  push:
+    paths:
+    - '**.sch'
+    - '**.kicad_pcb'
+  pull_request:
+    paths:
+      - '**.sch'
+      - '**.kicad_pcb'
+
+jobs:
+  Fabrication:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: INTI-CMNB/KiBot@v2
+      with:
+        # Required - kibot config file
+        config: config.kibot.yaml
+        # optional - prefix to output defined in config
+        dir: hardware
+    - name: upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Fabrication Files
+        path: output
