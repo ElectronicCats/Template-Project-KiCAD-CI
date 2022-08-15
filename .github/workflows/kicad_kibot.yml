@@ -22,7 +22,7 @@ jobs:
     - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
-        config: 'hardware/config.kibot.yaml
+        config: hardware/config.kibot.yaml
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
