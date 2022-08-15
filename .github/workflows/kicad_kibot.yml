@@ -3,13 +3,15 @@ name: KiCad CI/CD for ElectronicCats Projects
 on:
   push:
     paths:
-    - '**.sch'
-    - '**.kicad_pcb'
+    - 'hardware/**.sch'
+    - 'hardware/**.kicad_pcb'
+    - 'hardware/**.kibot.yaml'
     - '.github/workflows/kicad_kibot.yml'
   pull_request:
     paths:
-      - '**.sch'
-      - '**.kicad_pcb'
+      - 'hardware/**.sch'
+      - 'hardware/**.kicad_pcb'
+      - 'hardware/**.kibot.yaml'
       - '.github/workflows/kicad_kibot.yml'
 
 jobs:
@@ -20,7 +22,7 @@ jobs:
     - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
-        config: config.kibot.yaml
+        config: 'hardware/config.kibot.yaml
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
