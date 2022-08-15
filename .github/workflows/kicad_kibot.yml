@@ -25,6 +25,10 @@ jobs:
         config: hardware/config.kibot.yaml
         # optional - prefix to output defined in config
         dir: hardware
+        # optional - schematic file
+        schema: 'hardware/Template-KiCAD-Project-CI.sch'
+        # optional - PCB design file
+        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
     - name: upload results
       uses: actions/upload-artifact@v2
       with:
