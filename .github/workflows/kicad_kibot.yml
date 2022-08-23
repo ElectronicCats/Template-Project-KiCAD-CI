@@ -3,6 +3,9 @@ name: KiCad CI/CD for ElectronicCats Projects
 on:
   release:
     types: [published]
+    paths:
+    - '**.kicad_sch'
+    - '**.kicad_pcb'
 
 jobs:
   FabricationSch:
@@ -31,10 +34,6 @@ jobs:
         config: hardware/electroniccats_pcb.kibot.yaml
         # optional - prefix to output defined in config
         dir: hardware
-        # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.sch'
-        # optional - PCB design file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
     - name: upload results
       uses: actions/upload-artifact@v2
       with:
