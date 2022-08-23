@@ -25,22 +25,22 @@ jobs:
         name: Schematic fabrication Files
         path: SCH_fabricationFiles
 
-    FabricationPCB:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v2
-      - uses: INTI-CMNB/KiBot@v2_dk6
-        with:
-          # Required - kibot config file
-          config: hardware/JLCPCB.kibot.yaml
-          # optional - prefix to output defined in config
-          dir: hardware
-          # optional - schematic file
-          schema: 'hardware/Template-KiCAD-Project-CI.sch'
-          # optional - PCB design file
-          board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
-      - name: upload results
-        uses: actions/upload-artifact@v2
-        with:
-          name: PCB fabrication Files
-          path: PCB_fabricationFiles
+  FabricationPCB:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: INTI-CMNB/KiBot@v2_dk6
+      with:
+        # Required - kibot config file
+        config: hardware/electroniccats_pcb.kibot.yaml
+        # optional - prefix to output defined in config
+        dir: hardware
+        # optional - schematic file
+        schema: 'hardware/Template-KiCAD-Project-CI.sch'
+        # optional - PCB design file
+        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
+    - name: upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: PCB fabrication Files
+        path: PCB_fabricationFiles
