@@ -4,8 +4,10 @@ on:
   release:
     types: [published]
     paths:
-    - '**.kicad_sch'
-    - '**.kicad_pcb'
+      - '*.sch'
+      - '*.kicad_pcb'
+      - '*.kibot.yaml'
+      - '.github/workflows/kicad_kibot.yml'
 
 jobs:
   FabricationSch:
