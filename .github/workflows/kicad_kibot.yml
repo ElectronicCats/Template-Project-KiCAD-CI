@@ -10,14 +10,14 @@ on:
       - '.github/workflows/kicad_kibot.yml'
 
 jobs:
-  Fabrication:
+  FabricationSch:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
-        config: hardware/electroniccats.kibot.yaml
+        config: hardware/electroniccats_sch.kibot.yaml
         # optional - prefix to output defined in config
         dir: hardware
         # optional - schematic file
@@ -27,5 +27,25 @@ jobs:
     - name: upload results
       uses: actions/upload-artifact@v2
       with:
-        name: Fabrication Files
-        path: output
+        name: Schematic fabrication Files
+        path: SCH_fabricationFiles
+
+    FabricationPCB:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - uses: INTI-CMNB/KiBot@v2_dk6
+        with:
+          # Required - kibot config file
+          config: hardware/JLCPCB.kibot.yaml
+          # optional - prefix to output defined in config
+          dir: hardware
+          # optional - schematic file
+          schema: 'hardware/Template-KiCAD-Project-CI.sch'
+          # optional - PCB design file
+          board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
+      - name: upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: PCB fabrication Files
+          path: PCB_fabricationFiles
