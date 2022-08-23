@@ -1,14 +1,9 @@
 name: KiCad CI/CD for ElectronicCats Projects
 
 on:
-  push:
-    paths:
-    - 'hardware/**.sch'
-    - 'hardware/**.kicad_pcb'
-    - 'hardware/**.kibot.yaml'
-    - '.github/workflows/kicad_kibot.yml'
-  pull_request:
-    paths:
+  release:
+    types: [published]
+      paths:
       - 'hardware/**.sch'
       - 'hardware/**.kicad_pcb'
       - 'hardware/**.kibot.yaml'
