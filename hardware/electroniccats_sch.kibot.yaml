@@ -125,5 +125,5 @@ outputs:
     options:
       no_virtual: false 
       origin: grid
-      output: %f_step.%x
+      output: '%f_step.%x'
       metric_units: true
