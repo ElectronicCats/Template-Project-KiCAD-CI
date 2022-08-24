@@ -69,7 +69,7 @@ outputs:
 # URL: https://www.pcbway.com
 # Based on setting used by Gerber Zipper (https://github.com/g200kg/kicad-gerberzipper)
 
- - name: PCBWay_gerbers
+  - name: PCBWay_gerbers
     comment: Gerbers compatible with PCBWay
     type: gerber
     dir: PCBWay
