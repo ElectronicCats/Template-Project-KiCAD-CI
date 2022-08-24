@@ -61,11 +61,8 @@ outputs:
     type: bom
     dir: BoM
     options:
-      <<: *bom_options
       format: XLSX
       xlsx:
-        logo: 'images/inti.png'
-        digikey_link: 'digikey#'
         highlight_empty: false
 
   - name: 'bom_csv'
@@ -73,9 +70,8 @@ outputs:
     type: bom
     dir: BoM
     options:
-      <<: *bom_options
       format: CSV
-
+ 
   - name: 'position'
     comment: "Pick and place file"
     type: position
