@@ -14,10 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_dk6
+    - uses: INTI-CMNB/KiBot@v2_k6
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
+        # optional - schematic file
+        schema: 'hardware/*.kicad_sch'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
@@ -34,7 +36,8 @@ jobs:
       with:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
-        schema: '*.kicad_sch'
+        # optional - schematic file
+        schema: 'hardware/*.kicad_sch'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
