@@ -19,9 +19,9 @@ jobs:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
         # optional - schematic file
-        schema: 'hardware/LoRaWAN_Current_Sensor.kicad_sch'
+        schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
-        board: 'hardware/LoRaWAN_Current_Sensor.kicad_pro'
+        board: 'hardware/Multi smart meter STM32.kicad_pro'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
@@ -39,9 +39,9 @@ jobs:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
         # optional - schematic file
-        schema: 'hardware/LoRaWAN_Current_Sensor.kicad_sch'
+        schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
-        board: 'hardware/LoRaWAN_Current_Sensor.kicad_pro'
+        board: 'hardware/Multi smart meter STM32.kicad_pro'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
