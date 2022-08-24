@@ -21,7 +21,7 @@ jobs:
         # optional - schematic file
         schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
-        board: 'hardware/Multi smart meter STM32.kicad_pro'
+        board: 'hardware/Multi smart meter STM32.kicad_pcb'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
@@ -41,7 +41,7 @@ jobs:
         # optional - schematic file
         schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
-        board: 'hardware/Multi smart meter STM32.kicad_pro'
+        board: 'hardware/Multi smart meter STM32.kicad_pcb'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
