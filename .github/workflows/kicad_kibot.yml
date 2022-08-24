@@ -18,8 +18,6 @@ jobs:
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/*.kicad_sch'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
@@ -36,8 +34,6 @@ jobs:
       with:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/*.kicad_sch'
         # optional - prefix to output defined in config
         dir: hardware
     - name: upload results
