@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_k6
+    - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_k6
+    - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
