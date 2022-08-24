@@ -56,38 +56,6 @@ outputs:
       blacklist: 'DNF*'
       name_format: '%f_%r_iBoM'
 
-  - name: 'bom_html'
-    comment: "Bill of Materials in HTML format"
-    type: bom
-    dir: BoM
-    options: &bom_options
-      columns:
-        - Row
-        - field: References
-          name: Referencias
-        - field: Part
-          name: Parte
-        - field: Value
-          name: Valor
-        - field: manf#
-          name: P/N
-        - field: manf
-          name: Fabricante
-        - field: digikey#
-          name: 'Cod. Digi-Key'
-        - Footprint
-        - field: Desc
-          name: Descripción
-        - 'Quantity Per PCB'
-      exclude_filter: 'exclude_any'
-      group_fields:  ['digikey#', 'Part']
-      normalize_values: true
-      normalize_locale: true
-      html:
-        logo: 'images/inti.png'
-        digikey_link: 'digikey#'
-        highlight_empty: false
-
   - name: 'bom_xlsx'
     comment: "Bill of Materials in XLSX format"
     type: bom
