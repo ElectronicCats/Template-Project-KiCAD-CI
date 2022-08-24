@@ -29,7 +29,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Schematic fabrication Files
-        path: hardware
+        path: uploads
 
   FabricationPCB:
     runs-on: ubuntu-latest
@@ -50,4 +50,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: PCB fabrication Files
-        path: hardware
+        path: uploads
