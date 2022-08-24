@@ -24,11 +24,12 @@ jobs:
         board: 'hardware/Multi smart meter STM32.kicad_pcb'
         # optional - prefix to output defined in config
         dir: hardware
+
     - name: upload results
       uses: actions/upload-artifact@v2
       with:
         name: Schematic fabrication Files
-        path: SCH_fabricationFiles
+        path: hardware
 
   FabricationPCB:
     runs-on: ubuntu-latest
@@ -44,7 +45,7 @@ jobs:
         board: 'hardware/Multi smart meter STM32.kicad_pcb'
         # optional - prefix to output defined in config
         dir: hardware
-        
+
     - name: upload results
       uses: actions/upload-artifact@v2
       with:
