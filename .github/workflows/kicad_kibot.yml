@@ -19,7 +19,7 @@ jobs:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
         # optional - schematic file
-        schema: 'hardware/LoRaWAN_Current_Sensor.sch'
+        schema: 'hardware/LoRaWAN_Current_Sensor.kicad_sch'
         # optional - pcb file
         board: 'hardware/LoRaWAN_Current_Sensor.kicad_pro'
         # optional - prefix to output defined in config
@@ -39,7 +39,7 @@ jobs:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
         # optional - schematic file
-        schema: 'hardware/LoRaWAN_Current_Sensor.sch'
+        schema: 'hardware/LoRaWAN_Current_Sensor.kicad_sch'
         # optional - pcb file
         board: 'hardware/LoRaWAN_Current_Sensor.kicad_pro'
         # optional - prefix to output defined in config
