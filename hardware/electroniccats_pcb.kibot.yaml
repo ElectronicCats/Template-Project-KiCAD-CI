@@ -57,8 +57,9 @@ outputs:
   - name: JLCPCB
     comment: ZIP file for JLCPCB
     type: compress
-    dir: JLCPCB
+    dir: hardware
     options:
+      output: 'JLCPCB.%x'
       files:
         - from_output: JLCPCB_gerbers
           dest: /
@@ -119,8 +120,9 @@ outputs:
   - name: PCBWay
     comment: ZIP file for PCBWay
     type: compress
-    dir: PCBWay
+    dir: hardware
     options:
+      output: 'PCBWay.%x'
       format: ZIP
       files:
         - from_output: PCBWay_gerbers

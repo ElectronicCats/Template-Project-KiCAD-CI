@@ -22,11 +22,13 @@ jobs:
         schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
         board: 'hardware/Multi smart meter STM32.kicad_pcb'
+        # optional - prefix to output defined in config
+        dir: hardware
 
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: Schematic.pdf
+        files: hardware/schematicFiles.zip
 
   FabricationPCB:
     runs-on: ubuntu-latest
@@ -40,8 +42,10 @@ jobs:
         schema: 'hardware/Multi smart meter STM32.kicad_sch'
         # optional - pcb file
         board: 'hardware/Multi smart meter STM32.kicad_pcb'
+        # optional - prefix to output defined in config
+        dir: hardware
 
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: PCBWay_gerbers.zip
+        files: hardware/JLCPCB.zip

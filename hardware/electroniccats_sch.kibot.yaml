@@ -91,3 +91,16 @@ outputs:
       origin: grid
       output: '%f_step.%x'
       metric_units: true
+  
+  - name: Sch files
+    comment: schematic zip files
+    type: compress
+    dir: hardware
+    options: 
+      output: 'schematicFiles.%x'
+      format: ZIP
+      files: 
+        - from_output: print_sch
+          dest: /
+        - from_output: interactive_bom
+          dest: /
