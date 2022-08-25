@@ -1,36 +1,54 @@
 name: KiCad CI/CD for ElectronicCats Projects
 
 on:
-  push:
+  release:
+    types: [published]
     paths:
-    - 'hardware/**.sch'
-    - 'hardware/**.kicad_pcb'
-    - 'hardware/**.kibot.yaml'
-    - '.github/workflows/kicad_kibot.yml'
-  pull_request:
-    paths:
-      - 'hardware/**.sch'
-      - 'hardware/**.kicad_pcb'
-      - 'hardware/**.kibot.yaml'
+      - '*.sch'
+      - '*.kicad_pcb'
+      - '*.kibot.yaml'
       - '.github/workflows/kicad_kibot.yml'
 
 jobs:
-  Fabrication:
+  FabricationSch:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: INTI-CMNB/KiBot@v2_dk6
       with:
         # Required - kibot config file
-        config: hardware/electroniccats.kibot.yaml
-        # optional - prefix to output defined in config
-        dir: hardware
+        config: hardware/electroniccats_sch.kibot.yaml
         # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.sch'
-        # optional - PCB design file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
-    - name: upload results
-      uses: actions/upload-artifact@v2
+        schema: 'hardware/Multi smart meter STM32.kicad_sch'
+        # optional - pcb file
+        board: 'hardware/Multi smart meter STM32.kicad_pcb'
+
+    - name: upload assets
+      uses: softprops/action-gh-release@v1
       with:
-        name: Fabrication Files
-        path: output
+        files: |
+         generalFiles.zip
+         iBom.zip
+         Schematic.zip
+         Bom_csv.zip
+
+
+  FabricationPCB:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: INTI-CMNB/KiBot@v2_dk6
+      with:
+        # Required - kibot config file
+        config: hardware/electroniccats_pcb.kibot.yaml
+        # optional - schematic file
+        schema: 'hardware/Multi smart meter STM32.kicad_sch'
+        # optional - pcb file
+        board: 'hardware/Multi smart meter STM32.kicad_pcb'
+
+    - name: upload assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          JLCPCB.zip
+          PCBWay.zip
