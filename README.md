@@ -23,7 +23,7 @@ Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardwar
 
 ### Configuracion de automatizacion
 Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatizacion de archivos.
-En la carpeta .github/workflows, se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
+En la carpeta [.github/workflows](.github/workflows/), se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
 ```
 schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
 # optional - pcb file
