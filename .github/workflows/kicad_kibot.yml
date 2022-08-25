@@ -25,11 +25,11 @@ jobs:
         # optional - prefix to output defined in config
         dir: hardware
 
-    - name: upload results
-      uses: actions/upload-artifact@v2
+    - name: upload assets
+      uses: softprops/actions-gh-release@v1
       with:
         name: Schematic fabrication Files
-        path: uploads
+        path: hardware
 
   FabricationPCB:
     runs-on: ubuntu-latest
@@ -46,8 +46,8 @@ jobs:
         # optional - prefix to output defined in config
         dir: hardware
 
-    - name: upload results
-      uses: actions/upload-artifact@v2
+    - name: upload assets
+      uses: softprops/actions-gh-release@v1
       with:
         name: PCB fabrication Files
-        path: uploads
+        path: hardware
