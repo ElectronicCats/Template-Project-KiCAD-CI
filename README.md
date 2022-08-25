@@ -37,3 +37,11 @@ Al terminar el proyecto y su revisión, se publicará el primer Release.
 Para crear un nuevo Release, presiona el botón de "Create a new release".
 Una vez creado el Release, podrás ver la creacion de los archivos en la sección de Actions.
 Al terminar, los archivos serán generados en el mismo release.
+
+## Maintainer
+
+<a href="https://github.com/sponsors/ElectronicCats">
+  <img src="https://electroniccats.com/wp-content/uploads/2020/07/Badge_GHS.png" height="104" />
+</a>
+
+Electronic Cats invests time and resources providing this open source design, please support Electronic Cats and open-source hardware by purchasing products from Electronic Cats!
