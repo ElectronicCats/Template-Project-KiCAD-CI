@@ -19,7 +19,7 @@ Al termino del diseño del proyecto, KiCad deberá de generar los siguientes arc
 Además de archivos temporales, los cuales Git ignora al momento de cualquier push.
 [Archivos ignorados](.gitignore)
 
-Estos archivos deberán ser guardados dentro de la carpeta de hardware.
+Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardware/).
 
 ### Configuracion de automatizacion
 Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatizacion de archivos.

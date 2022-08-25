@@ -57,7 +57,6 @@ outputs:
   - name: JLCPCB
     comment: ZIP file for JLCPCB
     type: compress
-    dir: hardware
     options:
       format: ZIP
       files:
