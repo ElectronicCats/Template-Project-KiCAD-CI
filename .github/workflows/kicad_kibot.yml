@@ -26,7 +26,12 @@ jobs:
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: schematicFiles.zip
+        files: |
+         generalFiles.zip
+         iBom.zip
+         Schematic.zip
+         Bom_csv.zip
+
 
   FabricationPCB:
     runs-on: ubuntu-latest

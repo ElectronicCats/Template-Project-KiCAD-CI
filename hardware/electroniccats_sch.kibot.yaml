@@ -92,26 +92,50 @@ outputs:
       output: '%f_step.%x'
       metric_units: true
   
-  - name: Sch files
-    comment: schematic zip files
+  - name: general
+    comment: General files
     type: compress
     options: 
       format: ZIP
       files: 
-        - from_output: print_sch
-          dest: /
-        - from_output: interactive_bom
-          dest: /
         - from_output: print_front
           dest: /
         - from_output: print_bottom
           dest: /
         - from_output: bom_xlsx
           dest: /
-        - from_output: bom_csv
-          dest: /
         - from_output: position
           dest: /
         - from_output: 3D_model
           dest: /
-      output: 'schematicFiles.%x'
+      output: 'generalFiles.%x'
+
+  - name: iBom
+    comment: iBom file
+    type: compress
+    options: 
+      format: ZIP
+      files: 
+        - from_output: interactive_bom
+          dest: /
+      output: 'iBom.%x'
+
+  - name: PDFSchematic
+    comment: Schematic file
+    type: compress
+    options: 
+      format: ZIP
+      files: 
+        - from_output: print_sch
+          dest: /
+      output: 'Schematic.%x'
+
+  - name: csv
+    comment: csv file
+    type: compress
+    options: 
+      format: ZIP
+      files: 
+        - from_output: bom_csv
+          dest: /
+      output: 'Bom_csv.%x'

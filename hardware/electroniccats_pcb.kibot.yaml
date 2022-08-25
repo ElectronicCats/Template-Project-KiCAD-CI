@@ -59,6 +59,7 @@ outputs:
     type: compress
     dir: hardware
     options:
+      format: ZIP
       files:
         - from_output: JLCPCB_gerbers
           dest: /
