@@ -120,12 +120,11 @@ outputs:
   - name: PCBWay
     comment: ZIP file for PCBWay
     type: compress
-    dir: hardware
     options:
-      output: 'PCBWay.%x'
       format: ZIP
       files:
         - from_output: PCBWay_gerbers
           dest: /
         - from_output: PCBWay_drill
           dest: /
+      output: 'PCBWay.%x'
