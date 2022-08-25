@@ -82,7 +82,7 @@ outputs:
       separate_files_for_front_and_back: true
       only_smd: true
 
-  - name: '3D model'
+  - name: '3D_model'
     comment: "Step files"
     type: step
     dir: .
@@ -101,5 +101,17 @@ outputs:
         - from_output: print_sch
           dest: /
         - from_output: interactive_bom
+          dest: /
+        - from_output: print_front
+          dest: /
+        - from_output: print_bottom
+          dest: /
+        - from_output: bom_xlsx
+          dest: /
+        - from_output: bom_csv
+          dest: /
+        - from_output: position
+          dest: /
+        - from_output: 3D_model
           dest: /
       output: 'schematicFiles.%x'

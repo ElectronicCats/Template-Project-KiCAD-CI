@@ -44,4 +44,6 @@ jobs:
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: JLCPCB.zip
+        files: |
+          JLCPCB.zip
+          PCBWay.zip

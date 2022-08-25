@@ -59,12 +59,12 @@ outputs:
     type: compress
     dir: hardware
     options:
-      output: 'JLCPCB.%x'
       files:
         - from_output: JLCPCB_gerbers
           dest: /
         - from_output: JLCPCB_drill
           dest: /
+      output: 'JLCPCB.%x'
 
 # Gerber and drill files for PCBWay, with stencil (solder paste)
 # URL: https://www.pcbway.com
