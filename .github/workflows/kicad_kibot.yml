@@ -28,7 +28,7 @@ jobs:
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: hardware/schematicFiles.zip
+        files: 'hardware/schematicFiles.zip'
 
   FabricationPCB:
     runs-on: ubuntu-latest
@@ -48,4 +48,4 @@ jobs:
     - name: upload assets
       uses: softprops/action-gh-release@v1
       with:
-        files: hardware/JLCPCB.zip
+        files: 'hardware/JLCPCB.zip'
