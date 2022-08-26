@@ -25,12 +25,14 @@ Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardwar
 Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatizacion de archivos.
 En la carpeta [.github/workflows](.github/workflows/), se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
 ```
+# optional - schematic file
 schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
 # optional - pcb file
 board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 ```
 Se deberá reemplazar el nombre del archivo "Template-KiCAD-Project-CI" por el nombre del proyecto diseñado.
 Es importante conservar las extensiones de archivo .kicad_sch y .kicad_pcb.
+Además, en la misma carpeta se podrá encontrar un archivo action_drc.yml, el cual se encargará de hacer la comprobacion de ERC y DRC.
 
 ## Creacion de Release
 Al terminar el proyecto y su revisión, se publicará el primer Release.
