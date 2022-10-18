@@ -1,6 +1,6 @@
 # Plantilla para proyectos de ingeniería
 Esta plantilla es la base para cualquier proyecto desarrollado en Electronic Cats.
-Automaticamente, se generarán todos los archivos necesarios para la compra de material, fabricación y ensamble del proyecto.
+Automaticamente, se generarán todos los archivos necesarios para la compra de material, fabricación y ensamble.
 Así como documentos complementarios para un proyecto completo.
 
 > Este README.md puede ser utilizado como plantilla para documentación, de esta manera se puede incluir generalidades, recomendaciones y todo lo necesario para entender el proyecto.
@@ -23,8 +23,9 @@ Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardwar
 
 ### Configuracion de automatizacion
 Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatizacion de archivos.
-En la carpeta [.github/workflows](.github/workflows/), se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
-```
+En la carpeta [.github/workflows](.github/workflows/) se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
+
+```yaml
 # optional - schematic file
 schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
 # optional - pcb file
@@ -40,6 +41,15 @@ Para crear un nuevo Release, presiona el botón de "Create a new release".
 Una vez creado el Release, podrás ver la creacion de los archivos en la sección de Actions.
 Al terminar, los archivos serán generados en el mismo release.
 
+## Activar/desactivar DRC y ERC
+Las opciones de DRC y ERC estarán siempre activas predeterminadamente, para desactivarlas se deberá de eliminar las siguientes lineas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml).
+```yaml
+  run_erc: true
+  run_drc: true
+```
+Esta action solo correrá cada vez que se haga un release.
+
+Si, además, se busca desactivar el DRC y el ERC cuando se haga push o pull request, es necesario eliminar el archivo [action_drc.yml](.github/workflows/action_drc.yml).
 ## Maintainer
 
 <a href="https://github.com/sponsors/ElectronicCats">

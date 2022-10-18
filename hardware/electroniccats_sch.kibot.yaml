@@ -70,7 +70,29 @@ outputs:
     type: bom
     dir: BoM
     options:
+      csv:
+        hide_pcb_info: true
+        hide_stats_info: true
       format: CSV
+      columns:
+        - Row
+        - field: References
+          name: Referencias
+        - field: Part
+          name: Parte
+        - field: Value
+          name: Valor
+        - field: manf#
+          name: P/N
+        - field: manf
+          name: Fabricante
+        - field: digikey#
+          name: 'Cod. Digi-Key'
+        - Footprint
+        - field: Desc
+          name: Descripción
+        - 'Quantity Per PCB'
+      group_fields:  ['digikey#', 'Part']
  
   - name: 'position'
     comment: "Pick and place file"
