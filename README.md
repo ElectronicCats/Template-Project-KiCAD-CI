@@ -181,7 +181,7 @@ Usa este formato:
 ![](https://img.shields.io/github/stars/ElectronicCats/Template-Project-KiCAD-CI?style=for-the-badge)
 ![](https://img.shields.io/github/forks/ElectronicCats/Template-Project-KiCAD-CI?color=green&style=for-the-badge)
 
-Este tipo de indicadores nos pueden ayudar a identificar varia información relacionada al proyecto, solo los debes de agregar como una imagen y en el URL  pegar el link correspondiente. 
+Este tipo de indicadores nos pueden ayudar a identificar diferente información relacionada al proyecto, solo los debes de agregar como una imagen y en el URL  pegar el link correspondiente. 
 Los ejemplos de arriba fueron generados con la pagina: Shields.io , solo debes de asegurarte que son para GitHub y que tienen el formato `MarkDown`
 
 - Badges,
