@@ -21,7 +21,7 @@ jobs:
         # optional - schematic file
         schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
         # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
+        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 
     - name: upload assets
       uses: softprops/action-gh-release@v1
@@ -44,7 +44,7 @@ jobs:
         # optional - schematic file
         schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
         # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
+        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 
     - name: upload assets
       uses: softprops/action-gh-release@v1

@@ -33,15 +33,8 @@ board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 ```
 Se deberá reemplazar el nombre del archivo "Template-KiCAD-Project-CI" por el nombre del proyecto diseñado.
 Es importante conservar las extensiones de archivo .kicad_sch y .kicad_pcb.
-Además, en la misma carpeta se podrá encontrar un archivo action_drc.yml, el cual se encargará de hacer la comprobacion de ERC y DRC.
 
-## Creacion de Release
-Al terminar el proyecto y su revisión, se publicará el primer Release.
-Para crear un nuevo Release, presiona el botón de "Create a new release".
-Una vez creado el Release, podrás ver la creacion de los archivos en la sección de Actions.
-Al terminar, los archivos serán generados en el mismo release.
-
-## Activar/desactivar DRC y ERC
+### Activar/desactivar DRC y ERC
 Las opciones de DRC y ERC estarán siempre activas predeterminadamente, para desactivarlas se deberá de eliminar las siguientes lineas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml).
 ```yaml
   run_erc: true
@@ -50,6 +43,13 @@ Las opciones de DRC y ERC estarán siempre activas predeterminadamente, para des
 Esta action solo correrá cada vez que se haga un release.
 
 Si, además, se busca desactivar el DRC y el ERC cuando se haga push o pull request, es necesario eliminar el archivo [action_drc.yml](.github/workflows/action_drc.yml).
+
+## Creacion de Release
+Al terminar el proyecto y su revisión, se publicará el primer Release.
+Para crear un nuevo Release, presiona el botón de "Create a new release".
+Una vez creado el Release, podrás ver la creacion de los archivos en la sección de Actions.
+Al terminar, los archivos serán generados en el mismo release.
+
 ## Maintainer
 
 <a href="https://github.com/sponsors/ElectronicCats">
