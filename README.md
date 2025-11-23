@@ -61,7 +61,7 @@ Los workflows buscarán automáticamente:
 ### Activar/desactivar DRC y ERC
 
 **Revisión automática en Push/PR:**
-El workflow `kicad_drc_erc_check.yml` ejecuta automáticamente DRC y ERC cada vez que se hace push o pull request con cambios en archivos de KiCad. Para desactivar esta revisión automática, elimina o renombra el archivo `.github/workflows/kicad_drc_erc_check.yml`.
+El workflow `kicad_drc_erc_check.yml` ejecuta automáticamente DRC y ERC en cada push y pull request (sin importar qué archivos cambien). Si encuentra archivos de KiCad, ejecuta las verificaciones; si no los encuentra, se omite sin error. Para desactivar esta revisión automática, elimina o renombra el archivo `.github/workflows/kicad_drc_erc_check.yml`.
 
 **Revisión en Release:**
 Las opciones de DRC y ERC también están activas durante la generación de archivos de fabricación en releases. Para desactivarlas, elimina las siguientes líneas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml):
@@ -79,9 +79,11 @@ Al terminar el proyecto y su revisión, se publicará el primer Release.
 
 Para crear un nuevo Release, presiona el botón de "Create a new release".
 
-Una vez creado el Release, podrás ver la creación de los archivos en la sección de Actions.
+Una vez creado el Release, el workflow `kicad_fabrication_files.yml` se ejecutará automáticamente y podrás ver la creación de los archivos en la sección de Actions.
 
-Al terminar, los archivos serán generados en el mismo release.
+Al terminar, los archivos serán generados y subidos automáticamente al mismo release:
+- Archivos de documentación (PDFs, BoMs, posición, 3D)
+- Archivos de fabricación (Gerbers para JLCPCB y PCBWay)
 
 ## Elementos para mejorar tu `Readme.md`
 
