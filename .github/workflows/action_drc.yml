@@ -7,11 +7,13 @@ on:
       - 'hardware/**/*.kicad_sch'
       - 'hardware/**/*.kicad_pcb'
       - 'hardware/**/*.kibot.yaml'
+      - '.github/workflows/*.yml'
   pull_request:
     paths:
       - 'hardware/**/*.kicad_sch'
       - 'hardware/**/*.kicad_pcb'
       - 'hardware/**/*.kibot.yaml'
+      - '.github/workflows/*.yml'
 
 jobs:
   ERC_DRC:
