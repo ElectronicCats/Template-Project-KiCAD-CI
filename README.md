@@ -21,7 +21,7 @@ Para comenzar un nuevo proyecto, presiona el botón de "Use this template".
 
 ### KiCad
 
-Para esta plantilla, el hardware debe de ser diseñado y/o desarrollado en KiCad 6.
+Para esta plantilla, el hardware debe de ser diseñado y/o desarrollado en KiCad 9.
 
 Al término del diseño del proyecto, KiCad deberá de generar los siguientes archivos:
 
@@ -47,45 +47,31 @@ Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardwar
 
 ### Configuración de automatización
 
-Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatización de archivos.
+Los workflows de GitHub Actions están configurados para encontrar automáticamente los archivos de KiCad en la carpeta `hardware/`. No es necesario modificar manualmente las rutas de los archivos en los workflows.
 
-En la carpeta [.github/workflows](.github/workflows/) se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
+Los workflows buscarán automáticamente:
+- Archivos `.kicad_sch` (esquemáticos)
+- Archivos `.kicad_pcb` (PCB)
+- Archivos de configuración `.kibot.yaml`
 
-  
-
-```yaml
-
-# optional - schematic file
-
-schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-
-# optional - pcb file
-
-board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
-
-```
-
-Se deberá reemplazar el nombre del archivo "Template-KiCAD-Project-CI" por el nombre del proyecto diseñado.
-
-Es importante conservar las extensiones de archivo .kicad_sch y .kicad_pcb.
+**Nota:** Asegúrate de que tus archivos de KiCad estén guardados en la carpeta `hardware/` con las extensiones correctas (`.kicad_sch` y `.kicad_pcb`).
 
   
 
 ### Activar/desactivar DRC y ERC
 
-Las opciones de DRC y ERC están siempre activas predeterminadamente, para desactivarlas se deberá de eliminar las siguientes líneas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml).
+**Revisión automática en Push/PR:**
+El workflow `action_drc.yml` ejecuta automáticamente DRC y ERC cada vez que se hace push o pull request con cambios en archivos de KiCad. Para desactivar esta revisión automática, elimina o renombra el archivo `.github/workflows/action_drc.yml`.
+
+**Revisión en Release:**
+Las opciones de DRC y ERC también están activas durante la generación de archivos de fabricación en releases. Para desactivarlas, elimina las siguientes líneas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml):
 
 ```yaml
-
 run_erc: true
-
 run_drc: true
-
 ```
 
-Esta acción solo correrá cada vez que se haga un release.
-
-Si, además, se busca desactivar el DRC y el ERC cuando se haga push o pull request, es necesario eliminar el archivo [action_drc.yml](.github/workflows/action_drc.yml).
+**Nota:** Los workflows están configurados para usar KiCad 9. Asegúrate de que tus archivos de proyecto sean compatibles con esta versión.
 
 ## Creación de Release
 

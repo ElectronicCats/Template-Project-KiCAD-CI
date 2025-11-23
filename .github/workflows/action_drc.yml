@@ -4,52 +4,67 @@ name: "DRC and ERC using GitHub actions"
 on:
   push:
     paths:
-      - '*.kicad_sch'
-      - '*.kicad_pcb'
+      - 'hardware/**/*.kicad_sch'
+      - 'hardware/**/*.kicad_pcb'
+      - 'hardware/**/*.kibot.yaml'
   pull_request:
     paths:
-      - '*.kicad_sch'
-      - '*.kicad_pcb'
+      - 'hardware/**/*.kicad_sch'
+      - 'hardware/**/*.kicad_pcb'
+      - 'hardware/**/*.kibot.yaml'
 
 jobs:
-  ERC:
+  ERC_DRC:
     runs-on: ubuntu-latest
+    name: ERC and DRC Checks (KiCad 9)
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-    - name: Run ERC
-      uses: INTI-CMNB/KiBot@v2_k6
+    - name: Find KiCad files
+      id: find_files
+      working-directory: hardware
+      run: |
+        SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
+        PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "Error: No .kicad_sch file found in hardware/"
+          exit 1
+        fi
+        if [ -z "$PCB_FILE" ]; then
+          echo "Error: No .kicad_pcb file found in hardware/"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+        echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
+        echo "Found schematic: $SCHEMA_FILE"
+        echo "Found PCB: $PCB_FILE"
+
+    - name: Run ERC (Electrical Rule Check)
+      uses: actions-for-kicad/kicad-actions@v1-k9.0
       with:
-        kicad: 5
-        dir: hardware
-        skip: run_drc
-        targets: __NONE__
+        schematic_file_name: ${{ steps.find_files.outputs.schema_file }}
+        run_erc: true
+        run_drc: false
 
-    - name: Retrieve results
-      uses: actions/upload-artifact@v2
+    - name: Run DRC (Design Rule Check)
+      uses: actions-for-kicad/kicad-actions@v1-k9.0
       with:
-        name: ERC_Output
-        path: hardware
+        pcb_file_name: ${{ steps.find_files.outputs.pcb_file }}
+        run_erc: false
+        run_drc: true
 
-
-  DRC:
-    runs-on: ubuntu-latest
-    needs: ERC
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Run DRC
-      uses: INTI-CMNB/KiBot@v2_k6
+    - name: Upload ERC and DRC results
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        kicad: 5
-        dir: hardware
-        skip: run_erc
-        targets: __NONE__
-
-    - name: Retrieve results
-      uses: actions/upload-artifact@v1
-      with:
-        name: DRC_Output
-        path: hardware
+        name: ERC_DRC_Reports
+        path: |
+          hardware/*.erc
+          hardware/*.erc.html
+          hardware/*.drc
+          hardware/*.drc.html
+        retention-days: 7

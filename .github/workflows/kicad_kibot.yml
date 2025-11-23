@@ -3,52 +3,120 @@ name: KiCad CI/CD for ElectronicCats Projects
 on:
   release:
     types: [published]
-    paths:
-      - '*.sch'
-      - '*.kicad_pcb'
-      - '*.kibot.yaml'
-      - '.github/workflows/kicad_kibot.yml'
 
 jobs:
   FabricationSch:
     runs-on: ubuntu-latest
+    name: Generate Schematic Files (KiCad 9)
     steps:
-    - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_dk6
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
       with:
-        # Required - kibot config file
-        config: hardware/electroniccats_sch.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-        # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
+        python-version: '3.11'
 
-    - name: upload assets
-      uses: softprops/action-gh-release@v1
+    - name: Install KiBot
+      run: |
+        pip install kibot
+
+    - name: Install KiCad 9
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+        sudo apt-get update
+        sudo apt-get install -y kicad
+
+    - name: Find KiCad project files
+      id: find_files
+      working-directory: hardware
+      run: |
+        SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
+        PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "Error: No .kicad_sch file found"
+          exit 1
+        fi
+        if [ -z "$PCB_FILE" ]; then
+          echo "Error: No .kicad_pcb file found"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+        echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
+
+    - name: Run KiBot for Schematic
+      working-directory: hardware
+      run: |
+        kibot -c electroniccats_sch.kibot.yaml \
+          -s "${{ steps.find_files.outputs.schema_file }}" \
+          -b "${{ steps.find_files.outputs.pcb_file }}"
+
+    - name: Upload assets to release
+      uses: softprops/action-gh-release@v2
       with:
         files: |
-         generalFiles.zip
-         iBom.zip
-         Schematic.zip
-         Bom_csv.zip
-
+          hardware/generalFiles.zip
+          hardware/iBom.zip
+          hardware/Schematic.zip
+          hardware/Bom_csv.zip
 
   FabricationPCB:
     runs-on: ubuntu-latest
+    name: Generate PCB Files (KiCad 9)
     steps:
-    - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_dk6
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
       with:
-        # Required - kibot config file
-        config: hardware/electroniccats_pcb.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-        # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
+        python-version: '3.11'
 
-    - name: upload assets
-      uses: softprops/action-gh-release@v1
+    - name: Install KiBot
+      run: |
+        pip install kibot
+
+    - name: Install KiCad 9
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+        sudo apt-get update
+        sudo apt-get install -y kicad
+
+    - name: Find KiCad project files
+      id: find_files
+      working-directory: hardware
+      run: |
+        SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
+        PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "Error: No .kicad_sch file found"
+          exit 1
+        fi
+        if [ -z "$PCB_FILE" ]; then
+          echo "Error: No .kicad_pcb file found"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+        echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
+
+    - name: Run KiBot for PCB
+      working-directory: hardware
+      run: |
+        kibot -c electroniccats_pcb.kibot.yaml \
+          -s "${{ steps.find_files.outputs.schema_file }}" \
+          -b "${{ steps.find_files.outputs.pcb_file }}"
+
+    - name: Upload assets to release
+      uses: softprops/action-gh-release@v2
       with:
         files: |
-          JLCPCB.zip
-          PCBWay.zip
+          hardware/JLCPCB.zip
+          hardware/PCBWay.zip
