@@ -4,10 +4,20 @@ on:
   release:
     types: [published]
 
+# Variables de entorno para facilitar actualizaciones
+env:
+  PYTHON_VERSION: '3.11'
+  KICAD_VERSION: '9.0'
+  KIBOT_VERSION: ''  # Vacío = última versión disponible
+
+permissions:
+  contents: write  # Necesario para crear releases
+
 jobs:
-  FabricationSch:
+  setup:
     runs-on: ubuntu-latest
-    name: Generate Schematic Files (KiCad 9)
+    name: Setup Environment (KiCad 9)
+    timeout-minutes: 15
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -15,17 +25,109 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+
+    - name: Cache KiBot
+      id: cache-kibot
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-kibot-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-kibot-
 
     - name: Install KiBot
       run: |
-        pip install kibot
+        if [ -n "${{ env.KIBOT_VERSION }}" ]; then
+          pip install kibot==${{ env.KIBOT_VERSION }}
+        else
+          pip install kibot
+        fi
+        kibot --version
+
+    - name: Cache APT packages
+      id: cache-apt
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-kicad-${{ env.KICAD_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-apt-kicad-
 
     - name: Install KiCad 9
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+        sudo add-apt-repository -y ppa:kicad/kicad-${{ env.KICAD_VERSION }}-releases
+        sudo apt-get update
+        sudo apt-get install -y kicad
+        kicad-cli --version || echo "KiCad installed"
+
+    - name: Find KiCad project files
+      id: find_files
+      working-directory: hardware
+      run: |
+        SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
+        PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "❌ Error: No .kicad_sch file found in hardware/"
+          exit 1
+        fi
+        if [ -z "$PCB_FILE" ]; then
+          echo "❌ Error: No .kicad_pcb file found in hardware/"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+        echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
+        echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
+
+  FabricationSch:
+    runs-on: ubuntu-latest
+    name: Generate Schematic Files (KiCad 9)
+    needs: setup
+    timeout-minutes: 30
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+
+    - name: Cache KiBot
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-kibot-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-kibot-
+
+    - name: Install KiBot
+      run: |
+        if [ -n "${{ env.KIBOT_VERSION }}" ]; then
+          pip install kibot==${{ env.KIBOT_VERSION }}
+        else
+          pip install kibot
+        fi
+
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-kicad-${{ env.KICAD_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-apt-kicad-
+
+    - name: Install KiCad 9
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository -y ppa:kicad/kicad-${{ env.KICAD_VERSION }}-releases
         sudo apt-get update
         sudo apt-get install -y kicad
 
@@ -37,11 +139,11 @@ jobs:
         PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$SCHEMA_FILE" ]; then
-          echo "Error: No .kicad_sch file found"
+          echo "❌ Error: No .kicad_sch file found"
           exit 1
         fi
         if [ -z "$PCB_FILE" ]; then
-          echo "Error: No .kicad_pcb file found"
+          echo "❌ Error: No .kicad_pcb file found"
           exit 1
         fi
         
@@ -49,13 +151,53 @@ jobs:
         echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
 
     - name: Run KiBot for Schematic
+      id: run_kibot
       working-directory: hardware
+      continue-on-error: false
       run: |
+        echo "🚀 Running KiBot for schematic files..."
         kibot -c electroniccats_sch.kibot.yaml \
           -s "${{ steps.find_files.outputs.schema_file }}" \
           -b "${{ steps.find_files.outputs.pcb_file }}"
+        
+        if [ $? -eq 0 ]; then
+          echo "✅ KiBot completed successfully"
+        else
+          echo "❌ KiBot failed with exit code $?"
+          exit 1
+        fi
+
+    - name: Verify generated files
+      id: verify_files
+      working-directory: hardware
+      run: |
+        echo "🔍 Verifying generated files..."
+        MISSING_FILES=()
+        
+        for file in generalFiles.zip iBom.zip Schematic.zip Bom_csv.zip; do
+          if [ ! -f "$file" ]; then
+            MISSING_FILES+=("$file")
+            echo "❌ Missing: $file"
+          else
+            SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "0")
+            if [ "$SIZE" -eq 0 ]; then
+              MISSING_FILES+=("$file (empty)")
+              echo "❌ Empty file: $file"
+            else
+              echo "✅ Found: $file ($(numfmt --to=iec-i --suffix=B $SIZE 2>/dev/null || echo ${SIZE}B))"
+            fi
+          fi
+        done
+        
+        if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+          echo "❌ Error: Missing or empty files: ${MISSING_FILES[*]}"
+          exit 1
+        fi
+        
+        echo "✅ All required files generated successfully"
 
     - name: Upload assets to release
+      if: steps.verify_files.outcome == 'success'
       uses: softprops/action-gh-release@v2
       with:
         files: |
@@ -63,10 +205,14 @@ jobs:
           hardware/iBom.zip
           hardware/Schematic.zip
           hardware/Bom_csv.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   FabricationPCB:
     runs-on: ubuntu-latest
     name: Generate PCB Files (KiCad 9)
+    needs: setup
+    timeout-minutes: 30
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -74,17 +220,38 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+
+    - name: Cache KiBot
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-kibot-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-kibot-
 
     - name: Install KiBot
       run: |
-        pip install kibot
+        if [ -n "${{ env.KIBOT_VERSION }}" ]; then
+          pip install kibot==${{ env.KIBOT_VERSION }}
+        else
+          pip install kibot
+        fi
+
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-kicad-${{ env.KICAD_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-apt-kicad-
 
     - name: Install KiCad 9
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository -y ppa:kicad/kicad-9.0-releases
+        sudo add-apt-repository -y ppa:kicad/kicad-${{ env.KICAD_VERSION }}-releases
         sudo apt-get update
         sudo apt-get install -y kicad
 
@@ -96,11 +263,11 @@ jobs:
         PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$SCHEMA_FILE" ]; then
-          echo "Error: No .kicad_sch file found"
+          echo "❌ Error: No .kicad_sch file found"
           exit 1
         fi
         if [ -z "$PCB_FILE" ]; then
-          echo "Error: No .kicad_pcb file found"
+          echo "❌ Error: No .kicad_pcb file found"
           exit 1
         fi
         
@@ -108,16 +275,57 @@ jobs:
         echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
 
     - name: Run KiBot for PCB
+      id: run_kibot
       working-directory: hardware
+      continue-on-error: false
       run: |
+        echo "🚀 Running KiBot for PCB files..."
         kibot -c electroniccats_pcb.kibot.yaml \
           -s "${{ steps.find_files.outputs.schema_file }}" \
           -b "${{ steps.find_files.outputs.pcb_file }}"
+        
+        if [ $? -eq 0 ]; then
+          echo "✅ KiBot completed successfully"
+        else
+          echo "❌ KiBot failed with exit code $?"
+          exit 1
+        fi
+
+    - name: Verify generated files
+      id: verify_files
+      working-directory: hardware
+      run: |
+        echo "🔍 Verifying generated files..."
+        MISSING_FILES=()
+        
+        for file in JLCPCB.zip PCBWay.zip; do
+          if [ ! -f "$file" ]; then
+            MISSING_FILES+=("$file")
+            echo "❌ Missing: $file"
+          else
+            SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "0")
+            if [ "$SIZE" -eq 0 ]; then
+              MISSING_FILES+=("$file (empty)")
+              echo "❌ Empty file: $file"
+            else
+              echo "✅ Found: $file ($(numfmt --to=iec-i --suffix=B $SIZE 2>/dev/null || echo ${SIZE}B))"
+            fi
+          fi
+        done
+        
+        if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+          echo "❌ Error: Missing or empty files: ${MISSING_FILES[*]}"
+          exit 1
+        fi
+        
+        echo "✅ All required files generated successfully"
 
     - name: Upload assets to release
+      if: steps.verify_files.outcome == 'success'
       uses: softprops/action-gh-release@v2
       with:
         files: |
           hardware/JLCPCB.zip
           hardware/PCBWay.zip
-
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

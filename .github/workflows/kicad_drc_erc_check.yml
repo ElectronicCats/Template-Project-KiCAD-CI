@@ -1,4 +1,4 @@
-name: "DRC and ERC using GitHub actions"
+name: KiCad DRC and ERC Validation
 
 # Controls when the action will run.
 # Se ejecuta en cada push y pull request, sin importar qué archivos cambien
@@ -6,10 +6,14 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read  # Solo lectura para validaciones
+
 jobs:
   ERC_DRC:
     runs-on: ubuntu-latest
     name: ERC and DRC Checks (KiCad 9)
+    timeout-minutes: 15
 
     steps:
     - name: Checkout repository
@@ -18,6 +22,7 @@ jobs:
     - name: Check if KiCad files exist
       id: check_files
       working-directory: hardware
+      continue-on-error: false
       run: |
         SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
         PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
@@ -29,24 +34,86 @@ jobs:
           echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
         else
           echo "files_exist=false" >> $GITHUB_OUTPUT
-          echo "⚠️ No KiCad files found. Skipping DRC/ERC checks."
+          if [ -z "$SCHEMA_FILE" ]; then
+            echo "⚠️ No .kicad_sch file found in hardware/"
+          fi
+          if [ -z "$PCB_FILE" ]; then
+            echo "⚠️ No .kicad_pcb file found in hardware/"
+          fi
+          echo "⚠️ Skipping DRC/ERC checks (no KiCad files found)."
         fi
 
     - name: Run ERC (Electrical Rule Check)
       if: steps.check_files.outputs.files_exist == 'true'
+      id: run_erc
+      continue-on-error: true
       uses: actions-for-kicad/kicad-actions@v1-k9.0
       with:
         schematic_file_name: ${{ steps.check_files.outputs.schema_file }}
         run_erc: true
         run_drc: false
 
+    - name: Check ERC results
+      if: steps.check_files.outputs.files_exist == 'true'
+      working-directory: hardware
+      run: |
+        if [ -f *.erc ]; then
+          ERC_FILE=$(ls *.erc | head -n 1)
+          ERROR_COUNT=$(grep -i "error" "$ERC_FILE" 2>/dev/null | wc -l || echo "0")
+          WARNING_COUNT=$(grep -i "warning" "$ERC_FILE" 2>/dev/null | wc -l || echo "0")
+          
+          echo "📊 ERC Results:"
+          echo "   Errors: $ERROR_COUNT"
+          echo "   Warnings: $WARNING_COUNT"
+          
+          if [ "$ERROR_COUNT" -gt 0 ]; then
+            echo "❌ ERC found $ERROR_COUNT error(s)"
+            echo "::error::ERC validation failed with $ERROR_COUNT error(s)"
+          else
+            echo "✅ ERC passed (no errors found)"
+          fi
+        else
+          echo "⚠️ ERC report file not found"
+        fi
+
     - name: Run DRC (Design Rule Check)
       if: steps.check_files.outputs.files_exist == 'true'
+      id: run_drc
+      continue-on-error: true
       uses: actions-for-kicad/kicad-actions@v1-k9.0
       with:
         pcb_file_name: ${{ steps.check_files.outputs.pcb_file }}
         run_erc: false
         run_drc: true
+
+    - name: Check DRC results
+      if: steps.check_files.outputs.files_exist == 'true'
+      working-directory: hardware
+      run: |
+        if [ -f *.drc ]; then
+          DRC_FILE=$(ls *.drc | head -n 1)
+          ERROR_COUNT=$(grep -i "error" "$DRC_FILE" 2>/dev/null | wc -l || echo "0")
+          WARNING_COUNT=$(grep -i "warning" "$DRC_FILE" 2>/dev/null | wc -l || echo "0")
+          
+          echo "📊 DRC Results:"
+          echo "   Errors: $ERROR_COUNT"
+          echo "   Warnings: $WARNING_COUNT"
+          
+          if [ "$ERROR_COUNT" -gt 0 ]; then
+            echo "❌ DRC found $ERROR_COUNT error(s)"
+            echo "::error::DRC validation failed with $ERROR_COUNT error(s)"
+          else
+            echo "✅ DRC passed (no errors found)"
+          fi
+        else
+          echo "⚠️ DRC report file not found"
+        fi
+
+    - name: Fail if ERC or DRC had errors
+      if: steps.check_files.outputs.files_exist == 'true' && (steps.run_erc.outcome == 'failure' || steps.run_drc.outcome == 'failure')
+      run: |
+        echo "❌ ERC or DRC validation failed"
+        exit 1
 
     - name: Upload ERC and DRC results
       if: always() && steps.check_files.outputs.files_exist == 'true'
@@ -59,4 +126,4 @@ jobs:
           hardware/*.drc
           hardware/*.drc.html
         retention-days: 7
-
+        if-no-files-found: ignore
