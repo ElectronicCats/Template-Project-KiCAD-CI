@@ -61,7 +61,7 @@ Los workflows buscarán automáticamente:
 ### Activar/desactivar DRC y ERC
 
 **Revisión automática en Push/PR:**
-El workflow `action_drc.yml` ejecuta automáticamente DRC y ERC cada vez que se hace push o pull request con cambios en archivos de KiCad. Para desactivar esta revisión automática, elimina o renombra el archivo `.github/workflows/action_drc.yml`.
+El workflow `kicad_drc_erc_check.yml` ejecuta automáticamente DRC y ERC cada vez que se hace push o pull request con cambios en archivos de KiCad. Para desactivar esta revisión automática, elimina o renombra el archivo `.github/workflows/kicad_drc_erc_check.yml`.
 
 **Revisión en Release:**
 Las opciones de DRC y ERC también están activas durante la generación de archivos de fabricación en releases. Para desactivarlas, elimina las siguientes líneas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml):

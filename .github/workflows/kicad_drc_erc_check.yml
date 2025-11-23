@@ -1,0 +1,62 @@
+name: "DRC and ERC using GitHub actions"
+
+# Controls when the action will run.
+# Se ejecuta en cada push y pull request, sin importar qué archivos cambien
+on:
+  push:
+  pull_request:
+
+jobs:
+  ERC_DRC:
+    runs-on: ubuntu-latest
+    name: ERC and DRC Checks (KiCad 9)
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Check if KiCad files exist
+      id: check_files
+      working-directory: hardware
+      run: |
+        SCHEMA_FILE=$(find . -name "*.kicad_sch" -type f | head -n 1)
+        PCB_FILE=$(find . -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -n "$SCHEMA_FILE" ] && [ -n "$PCB_FILE" ]; then
+          echo "files_exist=true" >> $GITHUB_OUTPUT
+          echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+          echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
+          echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
+        else
+          echo "files_exist=false" >> $GITHUB_OUTPUT
+          echo "⚠️ No KiCad files found. Skipping DRC/ERC checks."
+        fi
+
+    - name: Run ERC (Electrical Rule Check)
+      if: steps.check_files.outputs.files_exist == 'true'
+      uses: actions-for-kicad/kicad-actions@v1-k9.0
+      with:
+        schematic_file_name: ${{ steps.check_files.outputs.schema_file }}
+        run_erc: true
+        run_drc: false
+
+    - name: Run DRC (Design Rule Check)
+      if: steps.check_files.outputs.files_exist == 'true'
+      uses: actions-for-kicad/kicad-actions@v1-k9.0
+      with:
+        pcb_file_name: ${{ steps.check_files.outputs.pcb_file }}
+        run_erc: false
+        run_drc: true
+
+    - name: Upload ERC and DRC results
+      if: always() && steps.check_files.outputs.files_exist == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ERC_DRC_Reports
+        path: |
+          hardware/*.erc
+          hardware/*.erc.html
+          hardware/*.drc
+          hardware/*.drc.html
+        retention-days: 7
+
