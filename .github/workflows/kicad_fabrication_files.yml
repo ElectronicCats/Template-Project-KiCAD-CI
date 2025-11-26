@@ -23,11 +23,22 @@ jobs:
     - name: Find KiCad files
       id: find_files
       run: |
+        # Verificar que el directorio hardware existe
+        if [ ! -d "hardware" ]; then
+          echo "❌ Error: hardware directory not found"
+          ls -la
+          exit 1
+        fi
+        
         # Primero encontrar el archivo PCB
         PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$PCB_FILE" ]; then
           echo "❌ Error: No .kicad_pcb file found in hardware/"
+          echo "Contents of hardware directory:"
+          ls -la hardware/ || true
+          echo "Searching in entire repository:"
+          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found"
           exit 1
         fi
         
@@ -105,11 +116,22 @@ jobs:
     - name: Find KiCad files
       id: find_files
       run: |
+        # Verificar que el directorio hardware existe
+        if [ ! -d "hardware" ]; then
+          echo "❌ Error: hardware directory not found"
+          ls -la
+          exit 1
+        fi
+        
         # Primero encontrar el archivo PCB
         PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$PCB_FILE" ]; then
           echo "❌ Error: No .kicad_pcb file found in hardware/"
+          echo "Contents of hardware directory:"
+          ls -la hardware/ || true
+          echo "Searching in entire repository:"
+          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found"
           exit 1
         fi
         
