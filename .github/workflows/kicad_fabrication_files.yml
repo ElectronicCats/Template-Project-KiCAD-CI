@@ -24,21 +24,13 @@ jobs:
       id: find_sch
       shell: bash
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Searching for .kicad_sch files in hardware directory..."
-        SCH_FILE=$(find hardware -maxdepth 1 -name "*.kicad_sch" -type f | head -n 1)
+        SCH_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
         if [ -z "$SCH_FILE" ]; then
           echo "ERROR: No .kicad_sch file found in hardware directory"
-          echo "Contents of hardware directory:"
-          ls -la hardware/ || echo "hardware directory not found"
-          echo "All .kicad_sch files in repository:"
-          find . -name "*.kicad_sch" -type f || echo "No .kicad_sch files found"
           exit 1
         fi
         echo "schema_file=$SCH_FILE" >> $GITHUB_OUTPUT
         echo "Found schematic file: $SCH_FILE"
-        echo "Verifying file exists:"
-        ls -lh "$SCH_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
@@ -90,23 +82,13 @@ jobs:
       id: find_pcb
       shell: bash
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Searching for .kicad_pcb files in hardware directory..."
-        ls -la hardware/ | grep -i "\.kicad_pcb" || echo "No .kicad_pcb files found in listing"
-        PCB_FILE=$(find hardware -maxdepth 1 -name "*.kicad_pcb" -type f | head -n 1)
+        PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
         if [ -z "$PCB_FILE" ]; then
           echo "ERROR: No .kicad_pcb file found in hardware directory"
-          echo "Contents of hardware directory:"
-          ls -la hardware/
-          echo "All .kicad_pcb files in repository:"
-          find . -name "*.kicad_pcb" -type f
           exit 1
         fi
         echo "board_file=$PCB_FILE" >> $GITHUB_OUTPUT
         echo "Found PCB file: $PCB_FILE"
-        echo "Verifying file exists:"
-        ls -lh "$PCB_FILE"
-        echo "File path will be passed to KiBot: $PCB_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
