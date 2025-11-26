@@ -24,28 +24,51 @@ jobs:
       id: find_sch
       shell: bash
       run: |
-        SCH_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
+        echo "Current directory: $(pwd)"
+        echo "Searching for .kicad_sch files in hardware directory..."
+        SCH_FILE=$(find hardware -maxdepth 1 -name "*.kicad_sch" -type f | head -n 1)
         if [ -z "$SCH_FILE" ]; then
           echo "ERROR: No .kicad_sch file found in hardware directory"
+          echo "Contents of hardware directory:"
+          ls -la hardware/ || echo "hardware directory not found"
+          echo "All .kicad_sch files in repository:"
+          find . -name "*.kicad_sch" -type f || echo "No .kicad_sch files found"
           exit 1
         fi
         echo "schema_file=$SCH_FILE" >> $GITHUB_OUTPUT
         echo "Found schematic file: $SCH_FILE"
+        echo "Verifying file exists:"
+        ls -lh "$SCH_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
         schema: ${{ steps.find_sch.outputs.schema_file }}
+        dir: hardware
+
+    - name: Verify generated files exist
+      shell: bash
+      run: |
+        echo "Checking for generated ZIP files in hardware directory..."
+        cd hardware
+        for zip in generalFiles.zip iBom.zip Schematic.zip Bom_csv.zip; do
+          if [ -f "$zip" ]; then
+            echo "✓ Found: $zip"
+            ls -lh "$zip"
+          else
+            echo "✗ Warning: $zip not found in hardware/"
+          fi
+        done
 
     - name: upload assets
       uses: softprops/action-gh-release@v2
       with:
         files: |
-         generalFiles.zip
-         iBom.zip
-         Schematic.zip
-         Bom_csv.zip
+         hardware/generalFiles.zip
+         hardware/iBom.zip
+         hardware/Schematic.zip
+         hardware/Bom_csv.zip
 
 
   FabricationPCB:
@@ -96,5 +119,5 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          JLCPCB.zip
-          PCBWay.zip
+          hardware/JLCPCB.zip
+          hardware/PCBWay.zip
