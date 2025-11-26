@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Run ERC
-      uses: INTI-CMNB/KiBot@v2_k6
+      uses: INTI-CMNB/KiBot@v2_k9
       with:
         kicad: 5
         dir: hardware
@@ -27,7 +27,7 @@ jobs:
         targets: __NONE__
 
     - name: Retrieve results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ERC_Output
         path: hardware
@@ -38,10 +38,10 @@ jobs:
     needs: ERC
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Run DRC
-      uses: INTI-CMNB/KiBot@v2_k6
+      uses: INTI-CMNB/KiBot@v2_k9
       with:
         kicad: 5
         dir: hardware
@@ -49,7 +49,7 @@ jobs:
         targets: __NONE__
 
     - name: Retrieve results
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: DRC_Output
         path: hardware

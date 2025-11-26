@@ -13,18 +13,14 @@ jobs:
   FabricationSch:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_dk6
+    - uses: actions/checkout@v4
+    - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-        # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 
     - name: upload assets
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
          generalFiles.zip
@@ -36,18 +32,14 @@ jobs:
   FabricationPCB:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: INTI-CMNB/KiBot@v2_dk6
+    - uses: actions/checkout@v4
+    - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
-        # optional - schematic file
-        schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-        # optional - pcb file
-        board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
 
     - name: upload assets
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
           JLCPCB.zip
