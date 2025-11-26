@@ -9,6 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache KiBot dependencies and 3D models
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/kibot
+          ~/.local/share/kibot
+        key: ${{ runner.os }}-kibot-${{ hashFiles('hardware/**/*.kibot.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-kibot-
+
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
@@ -28,6 +39,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache KiBot dependencies and 3D models
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/kibot
+          ~/.local/share/kibot
+        key: ${{ runner.os }}-kibot-${{ hashFiles('hardware/**/*.kibot.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-kibot-
+
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file

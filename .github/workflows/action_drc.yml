@@ -14,6 +14,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache KiBot dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/kibot
+          ~/.local/share/kibot
+        key: ${{ runner.os }}-kibot-${{ hashFiles('hardware/**/*.kibot.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-kibot-
+
     - name: Run ERC
       uses: INTI-CMNB/KiBot@v2_k9
       with:
@@ -35,6 +45,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache KiBot dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/kibot
+          ~/.local/share/kibot
+        key: ${{ runner.os }}-kibot-${{ hashFiles('hardware/**/*.kibot.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-kibot-
 
     - name: Run DRC
       uses: INTI-CMNB/KiBot@v2_k9
