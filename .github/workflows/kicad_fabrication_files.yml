@@ -20,23 +20,65 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-kibot-
 
-    - name: Find schematic file
-      id: find_sch
+    - name: Find KiCad files
+      id: find_files
       shell: bash
       run: |
-        SCH_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
-        if [ -z "$SCH_FILE" ]; then
-          echo "ERROR: No .kicad_sch file found in hardware directory"
+        echo "Current directory: $(pwd)"
+        echo "Checking if hardware directory exists..."
+        if [ ! -d "hardware" ]; then
+          echo "❌ Error: hardware directory not found"
+          echo "Contents of current directory:"
+          ls -la
           exit 1
         fi
-        echo "schema_file=$SCH_FILE" >> $GITHUB_OUTPUT
-        echo "Found schematic file: $SCH_FILE"
+        
+        echo "Contents of hardware directory:"
+        ls -la hardware/ || exit 1
+        
+        # Primero encontrar el archivo PCB
+        echo "🔍 Searching for PCB file..."
+        PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$PCB_FILE" ]; then
+          echo "❌ Error: No .kicad_pcb file found in hardware/"
+          echo "Searching in entire repository..."
+          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found anywhere"
+          exit 1
+        fi
+        
+        echo "✅ Found PCB file: $PCB_FILE"
+        
+        # Extraer el nombre base del PCB (sin extensión y sin ruta)
+        PCB_BASENAME=$(basename "$PCB_FILE" .kicad_pcb)
+        echo "🔍 Looking for schematic matching PCB: $PCB_BASENAME"
+        
+        # Buscar el esquemático que coincida con el nombre del PCB
+        MATCHING_SCHEMA=$(find hardware -name "${PCB_BASENAME}.kicad_sch" -type f | head -n 1)
+        
+        # Si no encuentra uno que coincida, usar el primero disponible como fallback
+        if [ -z "$MATCHING_SCHEMA" ]; then
+          echo "⚠️ No matching schematic found for $PCB_BASENAME, using first available"
+          SCHEMA_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
+        else
+          SCHEMA_FILE="$MATCHING_SCHEMA"
+          echo "✅ Found matching schematic: $SCHEMA_FILE"
+        fi
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "❌ Error: No .kicad_sch file found in hardware/"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
+        echo "board_file=$PCB_FILE" >> $GITHUB_OUTPUT
+        echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
         config: hardware/electroniccats_sch.kibot.yaml
-        schema: ${{ steps.find_sch.outputs.schema_file }}
+        schema: ${{ steps.find_files.outputs.schema_file }}
         dir: hardware
 
     - name: Verify generated files exist
@@ -78,23 +120,65 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-kibot-
 
-    - name: Find PCB file
-      id: find_pcb
+    - name: Find KiCad files
+      id: find_files
       shell: bash
       run: |
-        PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
-        if [ -z "$PCB_FILE" ]; then
-          echo "ERROR: No .kicad_pcb file found in hardware directory"
+        echo "Current directory: $(pwd)"
+        echo "Checking if hardware directory exists..."
+        if [ ! -d "hardware" ]; then
+          echo "❌ Error: hardware directory not found"
+          echo "Contents of current directory:"
+          ls -la
           exit 1
         fi
+        
+        echo "Contents of hardware directory:"
+        ls -la hardware/ || exit 1
+        
+        # Primero encontrar el archivo PCB
+        echo "🔍 Searching for PCB file..."
+        PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
+        
+        if [ -z "$PCB_FILE" ]; then
+          echo "❌ Error: No .kicad_pcb file found in hardware/"
+          echo "Searching in entire repository..."
+          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found anywhere"
+          exit 1
+        fi
+        
+        echo "✅ Found PCB file: $PCB_FILE"
+        
+        # Extraer el nombre base del PCB (sin extensión y sin ruta)
+        PCB_BASENAME=$(basename "$PCB_FILE" .kicad_pcb)
+        echo "🔍 Looking for schematic matching PCB: $PCB_BASENAME"
+        
+        # Buscar el esquemático que coincida con el nombre del PCB
+        MATCHING_SCHEMA=$(find hardware -name "${PCB_BASENAME}.kicad_sch" -type f | head -n 1)
+        
+        # Si no encuentra uno que coincida, usar el primero disponible como fallback
+        if [ -z "$MATCHING_SCHEMA" ]; then
+          echo "⚠️ No matching schematic found for $PCB_BASENAME, using first available"
+          SCHEMA_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
+        else
+          SCHEMA_FILE="$MATCHING_SCHEMA"
+          echo "✅ Found matching schematic: $SCHEMA_FILE"
+        fi
+        
+        if [ -z "$SCHEMA_FILE" ]; then
+          echo "❌ Error: No .kicad_sch file found in hardware/"
+          exit 1
+        fi
+        
+        echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
         echo "board_file=$PCB_FILE" >> $GITHUB_OUTPUT
-        echo "Found PCB file: $PCB_FILE"
+        echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
         # Required - kibot config file
         config: hardware/electroniccats_pcb.kibot.yaml
-        board: ${{ steps.find_pcb.outputs.board_file }}
+        board: ${{ steps.find_files.outputs.board_file }}
         dir: hardware
 
     - name: upload assets
