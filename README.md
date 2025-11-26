@@ -47,45 +47,32 @@ Estos archivos deberán ser guardados dentro de la carpeta de [hardware](hardwar
 
 ### Configuración de automatización
 
-Una vez terminado el proyecto, antes de hacer el primer Release, se deberán realizar algunos cambios para la automatización de archivos.
+Los workflows de GitHub Actions detectan automáticamente los archivos de KiCAD en el directorio `hardware/`. No es necesario modificar ningún archivo de configuración.
 
-En la carpeta [.github/workflows](.github/workflows/) se encuentra el archivo kicad_kibot.yml, en donde los siguientes campos deberán ser modificados
+Los workflows buscarán automáticamente:
+- El primer archivo `.kicad_pcb` encontrado en `hardware/`
+- El archivo `.kicad_sch` que coincida con el nombre del PCB
+- Si no hay coincidencia exacta, usará el primer `.kicad_sch` disponible
 
-  
-
-```yaml
-
-# optional - schematic file
-
-schema: 'hardware/Template-KiCAD-Project-CI.kicad_sch'
-
-# optional - pcb file
-
-board: 'hardware/Template-KiCAD-Project-CI.kicad_pcb'
-
-```
-
-Se deberá reemplazar el nombre del archivo "Template-KiCAD-Project-CI" por el nombre del proyecto diseñado.
-
-Es importante conservar las extensiones de archivo .kicad_sch y .kicad_pcb.
+**Nota**: Asegúrate de que los archivos de KiCAD estén guardados en la carpeta `hardware/` con sus extensiones correctas (`.kicad_pro`, `.kicad_pcb`, `.kicad_sch`).
 
   
 
 ### Activar/desactivar DRC y ERC
 
-Las opciones de DRC y ERC están siempre activas predeterminadamente, para desactivarlas se deberá de eliminar las siguientes líneas del archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml).
+Las opciones de DRC y ERC están siempre activas predeterminadamente. Para desactivarlas, se deberá modificar el archivo [electroniccats_sch.kibot.yaml](hardware/electroniccats_sch.kibot.yaml) cambiando las siguientes líneas:
 
 ```yaml
 
-run_erc: true
+run_erc: false  # Cambiar a false para desactivar ERC
 
-run_drc: true
+run_drc: false  # Cambiar a false para desactivar DRC
 
 ```
 
-Esta acción solo correrá cada vez que se haga un release.
-
-Si, además, se busca desactivar el DRC y el ERC cuando se haga push o pull request, es necesario eliminar el archivo [action_drc.yml](.github/workflows/action_drc.yml).
+**Workflows disponibles:**
+- **DRC y ERC**: Se ejecutan automáticamente en cada `push` y `pull_request` para validar el diseño
+- **Archivos de fabricación**: Se generan automáticamente cuando se crea un `release` publicado
 
 ## Creación de Release
 
