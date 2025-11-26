@@ -28,6 +28,7 @@ jobs:
       uses: INTI-CMNB/KiBot@v2_k9
       with:
         config: hardware/electroniccats_sch.kibot.yaml
+        schema: hardware/*.kicad_sch
         dir: hardware
         skip: run_drc
         targets: __NONE__
@@ -60,6 +61,7 @@ jobs:
       uses: INTI-CMNB/KiBot@v2_k9
       with:
         config: hardware/electroniccats_sch.kibot.yaml
+        schema: hardware/*.kicad_sch
         dir: hardware
         skip: run_erc
         targets: __NONE__
