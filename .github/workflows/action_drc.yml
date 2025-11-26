@@ -17,12 +17,12 @@ jobs:
     - name: Run ERC
       uses: INTI-CMNB/KiBot@v2_k9
       with:
-        kicad: 5
+        kicad: 9
         dir: hardware
         skip: run_drc
         targets: __NONE__
 
-    - name: Retrieve results
+    - name: Retrieve ERC results
       uses: actions/upload-artifact@v4
       with:
         name: ERC_Output
@@ -31,7 +31,7 @@ jobs:
 
   DRC:
     runs-on: ubuntu-latest
-    needs: ERC
+    # Jobs ejecutados en paralelo para mayor eficiencia
 
     steps:
     - uses: actions/checkout@v4
@@ -39,12 +39,12 @@ jobs:
     - name: Run DRC
       uses: INTI-CMNB/KiBot@v2_k9
       with:
-        kicad: 5
+        kicad: 9
         dir: hardware
         skip: run_erc
         targets: __NONE__
 
-    - name: Retrieve results
+    - name: Retrieve DRC results
       uses: actions/upload-artifact@v4
       with:
         name: DRC_Output

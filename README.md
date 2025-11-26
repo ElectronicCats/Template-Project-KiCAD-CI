@@ -21,7 +21,7 @@ Para comenzar un nuevo proyecto, presiona el botón de "Use this template".
 
 ### KiCad
 
-Para esta plantilla, el hardware debe de ser diseñado y/o desarrollado en KiCad 6.
+Para esta plantilla, el hardware debe de ser diseñado y/o desarrollado en KiCad 9.
 
 Al término del diseño del proyecto, KiCad deberá de generar los siguientes archivos:
 
