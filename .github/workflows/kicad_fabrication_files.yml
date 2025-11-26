@@ -22,32 +22,14 @@ jobs:
 
     - name: Find KiCad files
       id: find_files
-      shell: bash
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Checking if hardware directory exists..."
-        if [ ! -d "hardware" ]; then
-          echo "❌ Error: hardware directory not found"
-          echo "Contents of current directory:"
-          ls -la
-          exit 1
-        fi
-        
-        echo "Contents of hardware directory:"
-        ls -la hardware/ || exit 1
-        
         # Primero encontrar el archivo PCB
-        echo "🔍 Searching for PCB file..."
         PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$PCB_FILE" ]; then
           echo "❌ Error: No .kicad_pcb file found in hardware/"
-          echo "Searching in entire repository..."
-          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found anywhere"
           exit 1
         fi
-        
-        echo "✅ Found PCB file: $PCB_FILE"
         
         # Extraer el nombre base del PCB (sin extensión y sin ruta)
         PCB_BASENAME=$(basename "$PCB_FILE" .kicad_pcb)
@@ -71,7 +53,7 @@ jobs:
         fi
         
         echo "schema_file=$SCHEMA_FILE" >> $GITHUB_OUTPUT
-        echo "board_file=$PCB_FILE" >> $GITHUB_OUTPUT
+        echo "pcb_file=$PCB_FILE" >> $GITHUB_OUTPUT
         echo "✅ Found KiCad files: $SCHEMA_FILE and $PCB_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
@@ -122,32 +104,14 @@ jobs:
 
     - name: Find KiCad files
       id: find_files
-      shell: bash
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Checking if hardware directory exists..."
-        if [ ! -d "hardware" ]; then
-          echo "❌ Error: hardware directory not found"
-          echo "Contents of current directory:"
-          ls -la
-          exit 1
-        fi
-        
-        echo "Contents of hardware directory:"
-        ls -la hardware/ || exit 1
-        
         # Primero encontrar el archivo PCB
-        echo "🔍 Searching for PCB file..."
         PCB_FILE=$(find hardware -name "*.kicad_pcb" -type f | head -n 1)
         
         if [ -z "$PCB_FILE" ]; then
           echo "❌ Error: No .kicad_pcb file found in hardware/"
-          echo "Searching in entire repository..."
-          find . -name "*.kicad_pcb" -type f || echo "No .kicad_pcb files found anywhere"
           exit 1
         fi
-        
-        echo "✅ Found PCB file: $PCB_FILE"
         
         # Extraer el nombre base del PCB (sin extensión y sin ruta)
         PCB_BASENAME=$(basename "$PCB_FILE" .kicad_pcb)
