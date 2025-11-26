@@ -45,11 +45,26 @@ jobs:
         skip: run_drc
         targets: __NONE__
 
+    - name: Collect ERC results
+      if: always()
+      shell: bash
+      run: |
+        mkdir -p erc_reports
+        find hardware -maxdepth 1 -type f \( -name "*.rpt" -o -name "*.erc" -o -name "*erc*.txt" \) -exec cp {} erc_reports/ \; 2>/dev/null || true
+        if [ -z "$(ls -A erc_reports 2>/dev/null)" ]; then
+          echo "No ERC report files found (this is normal if no errors)"
+        else
+          echo "ERC reports collected:"
+          ls -la erc_reports/
+        fi
+
     - name: Retrieve ERC results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: ERC_Output
-        path: hardware
+        path: erc_reports
+        if-no-files-found: ignore
 
 
   DRC:
@@ -90,8 +105,23 @@ jobs:
         skip: run_erc
         targets: __NONE__
 
+    - name: Collect DRC results
+      if: always()
+      shell: bash
+      run: |
+        mkdir -p drc_reports
+        find hardware -maxdepth 1 -type f \( -name "*.rpt" -o -name "*.drc" -o -name "*drc*.txt" \) -exec cp {} drc_reports/ \; 2>/dev/null || true
+        if [ -z "$(ls -A drc_reports 2>/dev/null)" ]; then
+          echo "No DRC report files found (this is normal if no errors)"
+        else
+          echo "DRC reports collected:"
+          ls -la drc_reports/
+        fi
+
     - name: Retrieve DRC results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: DRC_Output
-        path: hardware
+        path: drc_reports
+        if-no-files-found: ignore
