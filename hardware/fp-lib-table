@@ -1,5 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "Library")(type "KiCad")(uri "${KIPRJMOD}/footprints/Library.pretty")(options "")(descr ""))
-  (lib (name "NewSources")(type "KiCad")(uri "${KIPRJMOD}/footprints/NewSources.pretty")(options "")(descr ""))
-)
