@@ -1,8 +1,11 @@
 name: KiCad CI/CD for ElectronicCats Projects
 
 on:
-  release:
-    types: [published]
+  #release:
+    #types: [published]
+  push: 
+
+  pull_request:
 
 jobs:
   FabricationSch:
