@@ -67,6 +67,7 @@ jobs:
       id: find_pcb
       shell: bash
       run: |
+        echo "Current directory: $(pwd)"
         echo "Searching for .kicad_pcb files in hardware directory..."
         ls -la hardware/ | grep -i "\.kicad_pcb" || echo "No .kicad_pcb files found in listing"
         PCB_FILE=$(find hardware -maxdepth 1 -name "*.kicad_pcb" -type f | head -n 1)
@@ -74,12 +75,15 @@ jobs:
           echo "ERROR: No .kicad_pcb file found in hardware directory"
           echo "Contents of hardware directory:"
           ls -la hardware/
+          echo "All .kicad_pcb files in repository:"
+          find . -name "*.kicad_pcb" -type f
           exit 1
         fi
         echo "board_file=$PCB_FILE" >> $GITHUB_OUTPUT
         echo "Found PCB file: $PCB_FILE"
         echo "Verifying file exists:"
         ls -lh "$PCB_FILE"
+        echo "File path will be passed to KiBot: $PCB_FILE"
 
     - uses: INTI-CMNB/KiBot@v2_dk9
       with:
