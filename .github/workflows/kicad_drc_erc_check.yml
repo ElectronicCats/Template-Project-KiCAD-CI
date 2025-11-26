@@ -24,11 +24,23 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-kibot-
 
+    - name: Find schematic file
+      id: find_sch
+      shell: bash
+      run: |
+        SCH_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
+        if [ -z "$SCH_FILE" ]; then
+          echo "ERROR: No .kicad_sch file found in hardware directory"
+          exit 1
+        fi
+        echo "schema_file=$SCH_FILE" >> $GITHUB_OUTPUT
+        echo "Found schematic file: $SCH_FILE"
+
     - name: Run ERC
       uses: INTI-CMNB/KiBot@v2_k9
       with:
         config: hardware/electroniccats_sch.kibot.yaml
-        schema: hardware/*.kicad_sch
+        schema: ${{ steps.find_sch.outputs.schema_file }}
         dir: hardware
         skip: run_drc
         targets: __NONE__
@@ -57,11 +69,23 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-kibot-
 
+    - name: Find schematic file
+      id: find_sch
+      shell: bash
+      run: |
+        SCH_FILE=$(find hardware -name "*.kicad_sch" -type f | head -n 1)
+        if [ -z "$SCH_FILE" ]; then
+          echo "ERROR: No .kicad_sch file found in hardware directory"
+          exit 1
+        fi
+        echo "schema_file=$SCH_FILE" >> $GITHUB_OUTPUT
+        echo "Found schematic file: $SCH_FILE"
+
     - name: Run DRC
       uses: INTI-CMNB/KiBot@v2_k9
       with:
         config: hardware/electroniccats_sch.kibot.yaml
-        schema: hardware/*.kicad_sch
+        schema: ${{ steps.find_sch.outputs.schema_file }}
         dir: hardware
         skip: run_erc
         targets: __NONE__
