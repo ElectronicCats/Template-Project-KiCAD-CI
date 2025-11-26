@@ -1,0 +1,132 @@
+(footprint "BAT-HLD-001"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "BT1"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(uuid "50493af0-a77a-43d4-a1d3-fa8d66c995d2")
+		(effects
+			(font
+				(size 1 0.9)
+				(thickness 0.05)
+			)
+		)
+	)
+	(property "Value" "Battery_Cell"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(uuid "b6fe5be5-6618-46ba-aa01-a65d83c141a1")
+		(effects
+			(font
+				(size 1 0.9)
+				(thickness 0.05)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "e69b59c0-f37b-4bdc-a21c-b19b6736c472")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "3a6e5c1d-a8f4-464d-bd55-24a95e226b11")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Description" "Single-cell battery"
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "55c3b16e-cdb9-4bb1-b1ab-9619907655d8")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "LCSC#" "C964833"
+		(at 0.09 -0.07 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ccfc0ca2-9485-428e-99a5-77f41dad13ac")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "manf#" ""
+		(at 300.06 174.64 -90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "508a197f-7c79-4b8b-87aa-eb217950dc39")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(pad "1" smd circle
+		(at 0 0)
+		(size 17.78 17.78)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "ed529b11-09f3-408d-b4ed-ccf7ce0df490")
+	)
+	(pad "2" smd rect
+		(at -11.43 0)
+		(size 2.54 5.08)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "7b1bbb3a-f93f-4fcc-840b-c0058334f9c9")
+	)
+	(pad "2" smd rect
+		(at 11.43 0)
+		(size 2.54 5.08)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "f48d0f6d-dda4-4b27-bbb1-b4eacc506da7")
+	)
+	(model "${KIPRJMOD}/Footprints/3D/BAT-HLD-001--3DModel-STEP-56544.STEP"
+		(offset
+			(xyz 0 0.1 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 180)
+		)
+	)
+	(model "${KIPRJMOD}/Footprints/3D/CR2032--3DModel-STEP-56544.STEP"
+		(offset
+			(xyz 0 -0.5 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
+)
