@@ -6,7 +6,8 @@ preflight:
   run_erc: true
   run_drc: true
   check_zone_fills: true
-  ignore_unconnected: false
+  drc:
+    ignore_unconnected: false
 
 global:
   # We want the revision added to the names for this project
