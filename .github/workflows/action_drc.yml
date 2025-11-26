@@ -3,13 +3,9 @@ name: "DRC and ERC using GitHub actions"
 # Controls when the action will run.
 on:
   push:
-    paths:
-      - '*.kicad_sch'
-      - '*.kicad_pcb'
+
   pull_request:
-    paths:
-      - '*.kicad_sch'
-      - '*.kicad_pcb'
+    
 
 jobs:
   ERC:

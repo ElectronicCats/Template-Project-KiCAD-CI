@@ -3,11 +3,6 @@ name: KiCad CI/CD for ElectronicCats Projects
 on:
   release:
     types: [published]
-    paths:
-      - '*.sch'
-      - '*.kicad_pcb'
-      - '*.kibot.yaml'
-      - '.github/workflows/kicad_kibot.yml'
 
 jobs:
   FabricationSch:
