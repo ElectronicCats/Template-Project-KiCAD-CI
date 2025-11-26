@@ -13,7 +13,10 @@ _autosave-*
 *-save.pro
 *-save.kicad_pcb
 fp-info-cache
-hardware/**/~*.lck
+
+# Lock files (KiCAD project lock files)
+**/~*.lck
+**/*.lck
 
 # Netlist files (exported from Eeschema)
 *.net
@@ -26,4 +29,5 @@ hardware/**/~*.lck
 hardware/**/*.xml
 hardware/**/*.csv
 
-hardware/Template-KiCAD-Project-CI-backups/
+# KiCAD backup directories (any project name)
+**/*-backups/
